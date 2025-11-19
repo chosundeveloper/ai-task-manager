@@ -85,17 +85,136 @@ npm run dev
 npm start
 ```
 
-### 2. ChatGPT에서 지시사항 전송
+### 2. 터널 설정 (ChatGPT 연동용)
 
-ChatGPT에 다음과 같이 요청:
+ChatGPT Actions에서 로컬 서버에 접근하려면 터널이 필요합니다.
 
+#### 옵션 1: ngrok (가장 안정적, 추천)
+```bash
+# 설치
+brew install ngrok
+
+# ngrok 가입 후 토큰 설정
+ngrok config add-authtoken YOUR_TOKEN
+
+# 터널 실행
+./start-ngrok.sh
 ```
-http://localhost:3000/task 엔드포인트로 POST 요청을 보내줘.
 
-Body:
+#### 옵션 2: localtunnel (무료, 자동 재연결)
+```bash
+# 설치
+npm install -g localtunnel
+
+# 터널 실행 (자동 재시작 포함)
+./start-tunnel.sh
+```
+
+#### 옵션 3: Cloudflare Tunnel (무료, 고정 URL)
+```bash
+# 설치
+brew install cloudflare/cloudflare/cloudflared
+
+# 설정 및 실행
+cloudflared tunnel login
+cloudflared tunnel create ai-task-manager
+cloudflared tunnel run ai-task-manager
+```
+
+**비교표:**
+
+| 서비스 | 무료 | 안정성 | 고정 URL | 추천도 |
+|--------|------|--------|----------|--------|
+| ngrok | ⭕ (제한) | ⭐⭐⭐⭐⭐ | ❌ (유료) | ⭐⭐⭐⭐⭐ |
+| localtunnel | ✅ | ⭐⭐ | ⭕ | ⭐⭐⭐ |
+| Cloudflare | ✅ | ⭐⭐⭐⭐ | ✅ | ⭐⭐⭐⭐ |
+
+### 3. ChatGPT Actions 설정
+
+1. ChatGPT GPT Builder 열기
+2. Actions → Create new action
+3. Schema 입력:
+
+```json
 {
-  "instructions": "React로 간단한 Todo 앱을 만들어줘. 추가, 삭제, 완료 기능이 필요해."
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Task API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://YOUR-TUNNEL-URL"
+    }
+  ],
+  "paths": {
+    "/task": {
+      "post": {
+        "operationId": "createTask",
+        "summary": "지시사항 전송",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "instructions": {
+                    "type": "string",
+                    "description": "상세한 개발 지시사항"
+                  }
+                },
+                "required": ["instructions"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  }
 }
+```
+
+**URL 업데이트:**
+- ngrok: `https://xxxx-xx-xxx-xxx-xxx.ngrok-free.app`
+- localtunnel: `https://gpt-task-api.loca.lt`
+- Cloudflare: `https://ai-task.yourdomain.com`
+
+### 4. ChatGPT에 지시사항 전송
+
+이제 ChatGPT에서 다음처럼 요청하면 자동으로 티켓이 생성됩니다:
+
+**올바른 형식 (상세):**
+```
+목표: React Todo 앱 개발
+핵심기능:
+- 할일 추가/삭제/완료 기능
+- LocalStorage 자동 저장
+- 반응형 디자인
+
+기술스택: React, TypeScript, TailwindCSS
+
+파일구조:
+- src/App.tsx (메인)
+- src/components/TodoItem.tsx
+- src/hooks/useTodos.ts
+
+구현요구사항:
+1. TypeScript 타입 안전성 보장
+2. 컴포넌트 재사용성 고려
+3. 접근성 (a11y) 준수
+4. 모바일 친화적 UI
+5. 코드 주석 포함
+```
+
+**잘못된 형식 (짧음):**
+```
+Todo 앱 만들어줘
 ```
 
 ### 3. 대시보드 확인
