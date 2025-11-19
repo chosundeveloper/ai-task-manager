@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Team Board</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#f4f5f7; margin:0; color:#172b4d; }
+        header.page { padding: 1.5rem 2rem; background:#0747a6; color:#fff; }
+        header.page h1 { margin:0; font-size:1.5rem; }
+        main.projects { display:flex; flex-direction:column; gap:1.5rem; padding:2rem; }
+        .project-grid { display:flex; gap:1rem; flex-wrap:wrap; }
+        .project-card { flex:1 1 200px; border:none; border-radius:12px; background:#0c66e4; color:#fff; padding:1rem; text-align:left; cursor:pointer; display:flex; flex-direction:column; gap:0.25rem; box-shadow:0 3px 6px rgba(9,30,66,0.25); transition:transform 0.2s, box-shadow 0.2s; }
+        .project-card:hover { transform:translateY(-2px); box-shadow:0 6px 12px rgba(9,30,66,0.3); }
+        .project-card.active { background:#0747a6; }
+        .project-icon { font-size:2rem; }
+        .project-name { font-weight:600; }
+        .project-count { font-size:0.85rem; color:rgba(255,255,255,0.85); }
+        .project { background:#ebecf0; border-radius:12px; padding:1rem 1.5rem 1.5rem; box-shadow:0 3px 6px rgba(9,30,66,0.25); }
+        .project-board { display:none; }
+        .project-board.active { display:block; }
+        .project-header { border-bottom:1px solid #dfe1e6; margin-bottom:1rem; padding-bottom:0.5rem; }
+        .project-header h2 { margin:0 0 0.25rem; }
+        .project-header p { margin:0; color:#5e6c84; font-size:0.85rem; }
+        .board { display:flex; gap:1rem; overflow-x:auto; padding-bottom:0.5rem; }
+        .column { background:#dfe1e6; border-radius:8px; padding:1rem; min-width:220px; flex:1; }
+        .column h3 { margin-top:0; font-size:0.9rem; color:#5e6c84; text-transform:uppercase; letter-spacing:0.05em; }
+        .card { background:#fff; border-radius:6px; padding:0.75rem; margin-bottom:0.75rem; box-shadow:0 1px 2px rgba(9,30,66,0.25); }
+        .card header { display:flex; justify-content:space-between; font-size:0.75rem; color:#5e6c84; margin-bottom:0.25rem; }
+        .card h3 { margin:0 0 0.25rem; font-size:0.95rem; }
+        .card p { margin:0; color:#42526e; font-size:0.85rem; }
+        .empty { color:#A5ADBA; font-style:italic; }
+        @media (max-width: 900px) { .board { flex-direction:column; } }
+    </style>
+</head>
+<body>
+    <header class='page'>
+        <h1>스프린트 보드</h1>
+        <p>임의 요구사항을 Jira 스타일로 정리</p>
+    </header>
+    <main class='projects'>
+        <section class='project-grid'>
+            
+            <button class='project-card active' data-target='project-0' aria-controls='project-0'>
+                <span class='project-icon'>🧮</span>
+                <span class='project-name'>계산기</span>
+                <span class='project-count'>4 / 13 tickets</span>
+            </button>
+            
+            <button class='project-card' data-target='project-1' aria-controls='project-1'>
+                <span class='project-icon'>📝</span>
+                <span class='project-name'>메모</span>
+                <span class='project-count'>3 / 13 tickets</span>
+            </button>
+            
+            <button class='project-card' data-target='project-2' aria-controls='project-2'>
+                <span class='project-icon'>⏱️</span>
+                <span class='project-name'>타이머</span>
+                <span class='project-count'>6 / 13 tickets</span>
+            </button>
+            
+        </section>
+        <section class='project-details'>
+            
+            <section id='project-0' class='project project-board active'>
+                <header class='project-header'>
+                    <h2>계산기</h2>
+                    <p>4 / 13 tickets</p>
+                </header>
+                <div class='board'>
+                    
+                <section class='column'>
+                    <h3>Backlog</h3>
+                    
+                <article class='card'>
+                    <header>
+                        <span class='card-id'>EPIC-01-01</span>
+                        <span class='card-epic'>EPIC-01</span>
+                    </header>
+                    <h3>기본 사칙연산</h3>
+                    <p>계산기를 만든다 관련 작업</p>
+                </article>
+                
+                </section>
+                
+                <section class='column'>
+                    <h3>In Progress</h3>
+                    
+                <article class='card'>
+                    <header>
+                        <span class='card-id'>EPIC-01-02</span>
+                        <span class='card-epic'>EPIC-01</span>
+                    </header>
+                    <h3>버튼 UI 필요</h3>
+                    <p>계산기를 만든다 관련 작업</p>
+                </article>
+                
+                </section>
+                
+                <section class='column'>
+                    <h3>Review</h3>
+                    
+                <article class='card'>
+                    <header>
+                        <span class='card-id'>EPIC-01-03</span>
+                        <span class='card-epic'>EPIC-01</span>
+                    </header>
+                    <h3>결과 히스토리</h3>
+                    <p>계산기를 만든다 관련 작업</p>
+                </article>
+                
+                </section>
+                
+                <section class='column'>
+                    <h3>Done</h3>
+                    
+                <article class='card'>
+                    <header>
+                        <span class='card-id'>EPIC-01-PLAN</span>
+                        <span class='card-epic'>EPIC-01</span>
+                    </header>
+                    <h3>계산기를 만든다 기획</h3>
+                    <p>요구사항을 검토하고 일정 산정</p>
+                </article>
+                
+                </section>
+                
+                </div>
+            </section>
+            
+            <section id='project-1' class='project project-board'>
+                <header class='project-header'>
+                    <h2>메모</h2>
+                    <p>3 / 13 tickets</p>
+                </header>
+                <div class='board'>
+                    
+                <section class='column'>
+                    <h3>Backlog</h3>
+                    
+                <article class='card'>
+                    <header>
+                        <span class='card-id'>EPIC-04-01</span>
+                        <span class='card-epic'>EPIC-04</span>
+                    </header>
+                    <h3>팀 보드</h3>
+                    <p>메모 공유 도구 만든다 관련 작업</p>
+                </article>
+                
+                </section>
+                
+                <section class='column'>
+                    <h3>In Progress</h3>
+                    
+                <article class='card'>
+                    <header>
+                        <span class='card-id'>EPIC-04-02</span>
+                        <span class='card-epic'>EPIC-04</span>
+                    </header>
+                    <h3>태그 검색</h3>
+                    <p>메모 공유 도구 만든다 관련 작업</p>
+                </article>
+                
+                </section>
+                
+                <section class='column'>
+                    <h3>Review</h3>
+                    <p class='empty'>No tickets</p>
+                </section>
+                
+                <section class='column'>
+                    <h3>Done</h3>
+                    
+                <article class='card'>
+                    <header>
+                        <span class='card-id'>EPIC-04-PLAN</span>
+                        <span class='card-epic'>EPIC-04</span>
+                    </header>
+                    <h3>메모 공유 도구 만든다 기획</h3>
+                    <p>요구사항을 검토하고 일정 산정</p>
+                </article>
+                
+                </section>
+                
+                </div>
+            </section>
+            
+            <section id='project-2' class='project project-board'>
+                <header class='project-header'>
+                    <h2>타이머</h2>
+                    <p>6 / 13 tickets</p>
+                </header>
+                <div class='board'>
+                    
+                <section class='column'>
+                    <h3>Backlog</h3>
+                    
+                <article class='card'>
+                    <header>
+                        <span class='card-id'>EPIC-02-01</span>
+                        <span class='card-epic'>EPIC-02</span>
+                    </header>
+                    <h3>카운트다운, 스톱워치</h3>
+                    <p>타이머를 만든다 관련 작업</p>
+                </article>
+                
+                <article class='card'>
+                    <header>
+                        <span class='card-id'>EPIC-03-01</span>
+                        <span class='card-epic'>EPIC-03</span>
+                    </header>
+                    <h3>다중 타이머 관리</h3>
+                    <p>타이머를 대시보드에서 관리 관련 작업</p>
+                </article>
+                
+                </section>
+                
+                <section class='column'>
+                    <h3>In Progress</h3>
+                    
+                <article class='card'>
+                    <header>
+                        <span class='card-id'>EPIC-02-02</span>
+                        <span class='card-epic'>EPIC-02</span>
+                    </header>
+                    <h3>알람음</h3>
+                    <p>타이머를 만든다 관련 작업</p>
+                </article>
+                
+                <article class='card'>
+                    <header>
+                        <span class='card-id'>EPIC-03-02</span>
+                        <span class='card-epic'>EPIC-03</span>
+                    </header>
+                    <h3>남은 시간 강조</h3>
+                    <p>타이머를 대시보드에서 관리 관련 작업</p>
+                </article>
+                
+                </section>
+                
+                <section class='column'>
+                    <h3>Review</h3>
+                    <p class='empty'>No tickets</p>
+                </section>
+                
+                <section class='column'>
+                    <h3>Done</h3>
+                    
+                <article class='card'>
+                    <header>
+                        <span class='card-id'>EPIC-02-PLAN</span>
+                        <span class='card-epic'>EPIC-02</span>
+                    </header>
+                    <h3>타이머를 만든다 기획</h3>
+                    <p>요구사항을 검토하고 일정 산정</p>
+                </article>
+                
+                <article class='card'>
+                    <header>
+                        <span class='card-id'>EPIC-03-PLAN</span>
+                        <span class='card-epic'>EPIC-03</span>
+                    </header>
+                    <h3>타이머를 대시보드에서 관리 기획</h3>
+                    <p>요구사항을 검토하고 일정 산정</p>
+                </article>
+                
+                </section>
+                
+                </div>
+            </section>
+            
+        </section>
+    </main>
+    <script>
+        // 기존 프로젝트 전환 기능
+        document.addEventListener('DOMContentLoaded', function () {
+            const cards = document.querySelectorAll('.project-card');
+            const boards = document.querySelectorAll('.project-board');
+            cards.forEach((card) => {
+                card.addEventListener('click', () => {
+                    const target = card.dataset.target;
+                    cards.forEach((btn) => btn.classList.toggle('active', btn === card));
+                    boards.forEach((board) => board.classList.toggle('active', board.id === target));
+                });
+            });
+
+            // 동적 티켓 로드
+            loadDynamicTickets();
+            setInterval(loadDynamicTickets, 5000); // 5초마다 새로고침
+        });
+
+        async function loadDynamicTickets() {
+            try {
+                const response = await fetch('/api/tickets');
+                const tickets = await response.json();
+
+                if (tickets.length === 0) return;
+
+                // Backlog 컬럼에 동적 티켓 추가
+                const backlogColumns = document.querySelectorAll('.column:first-child');
+                backlogColumns.forEach(column => {
+                    // 기존 동적 티켓 제거
+                    const existingDynamic = column.querySelectorAll('.card.dynamic-ticket');
+                    existingDynamic.forEach(card => card.remove());
+
+                    // 새 티켓 추가
+                    tickets.forEach(ticket => {
+                        const card = createTicketCard(ticket);
+                        column.insertBefore(card, column.querySelector('.card') || column.querySelector('.empty'));
+                    });
+                });
+            } catch (error) {
+                console.error('티켓 로드 실패:', error);
+            }
+        }
+
+        function createTicketCard(ticket) {
+            const card = document.createElement('article');
+            card.className = 'card dynamic-ticket';
+
+            const statusColor = {
+                'pending': '#FFA500',
+                'in_progress': '#0052CC',
+                'completed': '#00875A',
+                'failed': '#DE350B'
+            }[ticket.status] || '#42526E';
+
+            const statusText = {
+                'pending': '대기 중',
+                'in_progress': '진행 중',
+                'completed': '완료',
+                'failed': '실패'
+            }[ticket.status] || ticket.status;
+
+            card.innerHTML = `
+                <header>
+                    <span class='card-id'>${ticket.id}</span>
+                    <span class='card-epic' style='background:${statusColor}; color:white; padding:2px 6px; border-radius:3px; font-size:0.7rem;'>${statusText}</span>
+                </header>
+                <h3>${ticket.title}</h3>
+                <p>${ticket.description.substring(0, 100)}${ticket.description.length > 100 ? '...' : ''}</p>
+                ${ticket.status === 'pending' ? `
+                    <button onclick="developTicket('${ticket.id}')" style='margin-top:0.5rem; padding:0.5rem 1rem; background:#0052CC; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:600;'>
+                        🚀 개발
+                    </button>
+                ` : ticket.status === 'in_progress' ? `
+                    <div style='margin-top:0.5rem; padding:0.5rem; background:#DEEBFF; color:#0052CC; border-radius:4px; text-align:center; font-weight:600;'>
+                        🔄 개발 중...
+                    </div>
+                ` : ticket.status === 'completed' ? `
+                    <div style='margin-top:0.5rem; padding:0.5rem; background:#E3FCEF; color:#00875A; border-radius:4px; text-align:center; font-weight:600;'>
+                        ✅ 완료 (${ticket.filesCreated || 0}개 파일)
+                    </div>
+                ` : `
+                    <div style='margin-top:0.5rem; padding:0.5rem; background:#FFEBE6; color:#DE350B; border-radius:4px; text-align:center; font-weight:600;'>
+                        ❌ 실패: ${ticket.error || 'Unknown'}
+                    </div>
+                `}
+            `;
+
+            return card;
+        }
+
+        async function developTicket(ticketId) {
+            if (!confirm(`${ticketId} 티켓 개발을 시작하시겠습니까?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/develop/${ticketId}`, {
+                    method: 'POST'
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert(`✅ ${result.message}\n\n파일 생성: ${result.filesCreated}개\n경로: ${result.projectPath}`);
+                    loadDynamicTickets(); // 즉시 새로고침
+                } else {
+                    alert(`❌ 개발 실패: ${result.error}`);
+                }
+            } catch (error) {
+                console.error('개발 실행 오류:', error);
+                alert(`❌ 오류 발생: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jira 티켓 관리</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .status-pending { @apply bg-yellow-100 text-yellow-800; }
+    .status-in_progress { @apply bg-blue-100 text-blue-800; }
+    .status-completed { @apply bg-green-100 text-green-800; }
+    .status-failed { @apply bg-red-100 text-red-800; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div class="container mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">🎫 Jira 티켓 관리</h1>
+      <p class="text-gray-600">ChatGPT로부터 받은 개발 요청을 관리합니다</p>
+    </div>
+
+    <div class="grid gap-4" id="tickets">
+      <div class="text-center text-gray-500 py-8">
+        티켓을 불러오는 중...
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const statusLabels = {
+      pending: '대기 중',
+      in_progress: '진행 중',
+      completed: '완료',
+      failed: '실패'
+    };
+
+    const statusIcons = {
+      pending: '⏳',
+      in_progress: '🔄',
+      completed: '✅',
+      failed: '❌'
+    };
+
+    async function loadTickets() {
+      try {
+        const response = await fetch('/jira/tickets');
+        const tickets = await response.json();
+
+        const container = document.getElementById('tickets');
+
+        if (tickets.length === 0) {
+          container.innerHTML = `
+            <div class="text-center text-gray-500 py-8">
+              <p class="text-xl">📭 아직 티켓이 없습니다</p>
+              <p class="text-sm mt-2">ChatGPT에서 지시사항을 전송하면 여기에 나타납니다</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = tickets.map(ticket => `
+          <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-2xl">${statusIcons[ticket.status]}</span>
+                  <span class="font-mono text-sm font-bold text-gray-700">${ticket.id}</span>
+                  <span class="px-2 py-1 rounded-full text-xs font-semibold status-${ticket.status}">
+                    ${statusLabels[ticket.status]}
+                  </span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">${ticket.title}</h3>
+                <p class="text-gray-600 text-sm mb-3">${ticket.description.substring(0, 200)}${ticket.description.length > 200 ? '...' : ''}</p>
+
+                <div class="text-xs text-gray-500 space-y-1">
+                  <div>📅 생성: ${new Date(ticket.createdAt).toLocaleString('ko-KR')}</div>
+                  ${ticket.startedAt ? `<div>🚀 시작: ${new Date(ticket.startedAt).toLocaleString('ko-KR')}</div>` : ''}
+                  ${ticket.completedAt ? `<div>✅ 완료: ${new Date(ticket.completedAt).toLocaleString('ko-KR')}</div>` : ''}
+                  ${ticket.projectPath ? `<div>📁 경로: ${ticket.projectPath}</div>` : ''}
+                  ${ticket.filesCreated ? `<div>📄 파일: ${ticket.filesCreated}개 생성</div>` : ''}
+                  ${ticket.error ? `<div class="text-red-600">❌ 오류: ${ticket.error}</div>` : ''}
+                </div>
+              </div>
+
+              <div>
+                ${ticket.status === 'pending' ? `
+                  <button
+                    onclick="developTicket('${ticket.id}')"
+                    class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold shadow-md hover:shadow-lg"
+                  >
+                    🚀 개발
+                  </button>
+                ` : ticket.status === 'in_progress' ? `
+                  <div class="px-6 py-3 bg-blue-100 text-blue-800 rounded-lg font-semibold">
+                    🔄 진행 중...
+                  </div>
+                ` : ticket.status === 'completed' ? `
+                  <div class="px-6 py-3 bg-green-100 text-green-800 rounded-lg font-semibold">
+                    ✅ 완료
+                  </div>
+                ` : `
+                  <button
+                    onclick="developTicket('${ticket.id}')"
+                    class="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-semibold shadow-md hover:shadow-lg"
+                  >
+                    🔄 재시도
+                  </button>
+                `}
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+      } catch (error) {
+        console.error('티켓 로드 오류:', error);
+        document.getElementById('tickets').innerHTML = `
+          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            ❌ 티켓을 불러오는데 실패했습니다: ${error.message}
+          </div>
+        `;
+      }
+    }
+
+    async function developTicket(ticketId) {
+      if (!confirm(`${ticketId} 티켓 개발을 시작하시겠습니까?`)) {
+        return;
+      }
+
+      try {
+        const button = event.target;
+        button.disabled = true;
+        button.innerHTML = '🔄 개발 중...';
+
+        const response = await fetch(`/jira/develop/${ticketId}`, {
+          method: 'POST'
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert(`✅ ${result.message}\n\n파일 생성: ${result.filesCreated}개\n경로: ${result.projectPath}`);
+        } else {
+          alert(`❌ 개발 실패: ${result.error}`);
+        }
+
+        loadTickets();
+
+      } catch (error) {
+        console.error('개발 실행 오류:', error);
+        alert(`❌ 오류 발생: ${error.message}`);
+        loadTickets();
+      }
+    }
+
+    // 초기 로드
+    loadTickets();
+
+    // 5초마다 자동 새로고침
+    setInterval(loadTickets, 5000);
+  </script>
+</body>
+</html>
